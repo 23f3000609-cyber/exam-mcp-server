@@ -6,15 +6,12 @@ from fastmcp.server.dependencies import get_http_headers
 
 EMAIL = "23f3000609@ds.study.iitm.ac.in"
 
-mcp = FastMCP(
-    "Exam MCP Server",
-    transport_security={"enable_dns_rebinding_protection": False},
-)
+mcp = FastMCP("Exam MCP Server")
 
 
 @mcp.tool()
 def solve_challenge() -> str:
-    """Solve the exam challenge from the current HTTP request headers."""
+    """Calculate the response using the challenge in the HTTP request header."""
     headers = get_http_headers()
     challenge = headers.get("x-exam-challenge")
 
@@ -24,7 +21,9 @@ def solve_challenge() -> str:
     normalized_email = EMAIL.strip().lower()
     message = f"{challenge}:{normalized_email}"
 
-    return hashlib.sha256(message.encode("utf-8")).hexdigest()[:16]
+    return hashlib.sha256(
+        message.encode("utf-8")
+    ).hexdigest()[:16]
 
 
 if __name__ == "__main__":
